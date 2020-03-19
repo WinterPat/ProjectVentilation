@@ -484,7 +484,7 @@ triggered */
 
 	bool state=false;
 	bool clear = false;
-	bool automode = true;
+	bool automode = false;
 
 	uint16_t sel_freq;//selected freq
 	uint16_t sel_pr;//selected pressure
@@ -513,12 +513,6 @@ triggered */
 			menu.event(MenuItem::ok);
 			if(state==false){
 				state=true;
-				if(automode == false){
-
-				}
-				else if(automode == true){
-
-				}
 				lcd->setCursor(0, 1);
 				lcd->print("  Pres  ");
 				lcd->print(std::to_string(psa));
@@ -526,9 +520,6 @@ triggered */
 			else{
 				state=false;
 				if(automode == false){
-
-				}
-				else if(automode == true){
 
 					counter2 = 0;
 				}
@@ -542,15 +533,13 @@ triggered */
 		}
 		if(!sw2.read()){
 			menu.event(MenuItem::up);
-
-
 			if(state==false){
-				if(automode == false){
-					automode = true;
+				if(automode == true){
+					automode = false;
 
 				}
-				else if(automode == true){
-					automode = false;
+				else if(automode == false){
+					automode = true;
 
 					counter2 = 0;
 				}
@@ -563,11 +552,11 @@ triggered */
 		if(!sw3.read()){
 			menu.event(MenuItem::down);
 			if(state==false){
-				if(automode == false){
-					automode = true;
-				}
-				else if(automode == true){
+				if(automode == true){
 					automode = false;
+				}
+				else if(automode == false){
+					automode = true;
 				}
 				lcd->setCursor(0, 1);
 				lcd->print("  Pres  ");
@@ -582,16 +571,14 @@ triggered */
 		sel_freq = frequency->getValue()*200;
 		sel_pr = pressure->getValue();
 
-		if(automode == true){
+		if(automode == false){
 			freq = sel_freq;
 		}
-		if(automode == false){
+		if(automode == true){
 			if(sel_pr==psa && psa != 0);
 			else if(sel_pr>psa){
-
 				mul_freq = (sel_pr*10)/(psa);
 				freq = freq + (mul_freq*10);
-
 			}
 			else if(sel_pr<psa){
 				mul_freq = (psa*10)/(sel_pr);
@@ -614,7 +601,7 @@ triggered */
 		if(sel_pr != prev_pr){
 			counter2 = 0;
 		}
-		if(automode == false){
+		if(automode == true){
 			if(counter2 >= 5000 && psa != sel_pr)
 			{
 				lcd->clear();
